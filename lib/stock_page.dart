@@ -62,7 +62,7 @@ class _StocksPageState extends State<StocksPage> {
                       // Container(
                       //   height: 500,
                       //   width: width,
-                      //   decoration: BoxDecoration(
+                      //   decoration: const BoxDecoration(
                       //     gradient: LinearGradient(begin: Alignment.centerRight, end: Alignment.centerLeft, colors: [
                       //       Colors.red,
                       //       Colors.orange,

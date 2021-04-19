@@ -36,7 +36,7 @@ class _AxisWidgetPainter extends CustomPainter {
         Offset(x, height),
         linePaint,
       );
-      final textSpan = TextSpan(text: '$x', style: TextStyle(color: Colors.white70, fontSize: 10));
+      final textSpan = TextSpan(text: '${width - x}', style: const TextStyle(color: Colors.white70, fontSize: 10));
       final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
       textPainter.layout(maxWidth: 95);
       textPainter.paint(canvas, Offset(x - textPainter.width / 2, height + 4));
