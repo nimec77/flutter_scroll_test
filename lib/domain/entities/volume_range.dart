@@ -1,13 +1,19 @@
+import 'package:flutter/material.dart';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+class VolumeRange {
+  final double minVolume;
+  final double maxVolume;
 
-part 'volume_range.freezed.dart';
+  const VolumeRange({required this.minVolume, required this.maxVolume})
+      : assert(minVolume < maxVolume, 'The maximum volume must be greater than the minimum volume');
 
-@freezed
-abstract class VolumeRange with _$VolumeRange {
-  @Assert('minVolume <= maxVolume', 'the maximum volume must be greater than the minimum volume')
-  const factory VolumeRange({
-    required final double minVolume,
-    required final double maxVolume,
-  }) = _VolumeRange;
+  double get size => maxVolume - minVolume;
+
+  @override
+  bool operator ==(Object other) {
+    return other is VolumeRange && other.maxVolume == maxVolume && other.minVolume == minVolume;
+  }
+
+  @override
+  int get hashCode => hashValues(minVolume, maxVolume);
 }

@@ -14,10 +14,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Builder(
         builder: (context) {
-          return StocksPage(size: MediaQuery.of(context).size);
+          return StocksPage(width: MediaQuery.of(context).size.width, height: 500);
         },
       ),
     );
   }
 }
-

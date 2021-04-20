@@ -54,9 +54,6 @@ class _AxisYWidgetPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    if (oldDelegate is! _AxisYWidgetPainter) {
-      return true;
-    }
-    return oldDelegate.volumeRange != volumeRange;
+    return oldDelegate is! _AxisYWidgetPainter || oldDelegate.volumeRange != volumeRange;
   }
 }

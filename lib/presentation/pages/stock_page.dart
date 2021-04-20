@@ -7,9 +7,10 @@ import '../widgets/axis_x_widget.dart';
 import '../widgets/axis_y_widget.dart';
 
 class StocksPage extends StatefulWidget {
-  final Size size;
+  final double height;
+  final double width;
 
-  const StocksPage({Key? key, required this.size}) : super(key: key);
+  const StocksPage({Key? key, required this.height, required this.width}) : super(key: key);
 
   @override
   _StocksPageState createState() => _StocksPageState();
@@ -19,14 +20,12 @@ class _StocksPageState extends State<StocksPage> {
   late final ScrollController scrollController;
   late final double scrollThreshold;
   late double width;
-  late bool expanded;
 
   @override
   void initState() {
     super.initState();
-    expanded = false;
-    width = widget.size.width * 2;
-    scrollThreshold = math.max(widget.size.width / 5, 200);
+    width = widget.width * 2;
+    scrollThreshold = math.max(widget.width / 5, 200);
     scrollController = ScrollController();
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
@@ -35,7 +34,7 @@ class _StocksPageState extends State<StocksPage> {
       if (maxScroll - currentScroll <= scrollThreshold) {
         // debugPrint('Need to expand!');
         setState(() {
-          width += widget.size.width;
+          width += widget.width;
         });
       }
     });
@@ -79,7 +78,7 @@ class _StocksPageState extends State<StocksPage> {
                       //   ),
                       // ),
                       SizedBox(
-                        height: 500,
+                        height: widget.height,
                         width: width,
                         child: AxisXWidget(),
                       ),
@@ -87,10 +86,10 @@ class _StocksPageState extends State<StocksPage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 500,
+              SizedBox(
+                height: widget.height,
                 width: kIndentationX,
-                child: AxisYWidget(volumeRange: VolumeRange(minVolume: 76480, maxVolume: 76900)),
+                child: const AxisYWidget(volumeRange: VolumeRange(minVolume: 76480, maxVolume: 76900)),
               ),
             ],
           );
