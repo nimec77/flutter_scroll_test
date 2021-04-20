@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_scroll_test/stock_page.dart';
+import 'package:flutter_scroll_test/presentation/pages/stock_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
       home: Builder(
         builder: (context) {
           return StocksPage(size: MediaQuery.of(context).size);

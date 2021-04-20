@@ -1,6 +1,10 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_scroll_test/axis_widget.dart';
+import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
+import 'package:flutter_scroll_test/presentation/widgets/constants.dart';
+
+import '../widgets/axis_x_widget.dart';
+import '../widgets/axis_y_widget.dart';
 
 class StocksPage extends StatefulWidget {
   final Size size;
@@ -22,7 +26,7 @@ class _StocksPageState extends State<StocksPage> {
     super.initState();
     expanded = false;
     width = widget.size.width * 2;
-    scrollThreshold = Math.max(widget.size.width / 5, 200);
+    scrollThreshold = math.max(widget.size.width / 5, 200);
     scrollController = ScrollController();
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
@@ -77,16 +81,16 @@ class _StocksPageState extends State<StocksPage> {
                       SizedBox(
                         height: 500,
                         width: width,
-                        child: AxisWidget(),
+                        child: AxisXWidget(),
                       ),
                     ],
                   ),
                 ),
               ),
-              Container(
+              const SizedBox(
                 height: 500,
-                width: 50,
-                color: Colors.green,
+                width: kIndentationX,
+                child: AxisYWidget(volumeRange: VolumeRange(minVolume: 76480, maxVolume: 76900)),
               ),
             ],
           );
