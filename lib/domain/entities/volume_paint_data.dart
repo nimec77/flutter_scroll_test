@@ -13,9 +13,6 @@ class VolumePaintData {
   final double stockPaddingTop;
   late final double _height;
   late final double _volumePerPixel;
-  late final double _minValue;
-  late final double _maxValue;
-  late final double _volumeStep;
   late final List<DataPoint> _segments;
 
   VolumePaintData({
@@ -26,38 +23,34 @@ class VolumePaintData {
   }) {
     _height = height - kIndentationY;
     _volumePerPixel = volumeRange.size / (_height - kStockPaddingBottom - kStockPaddingTop);
-    _minValue = double.parse(_toBeautiful(volumeRange.minVolume - heightToVolume(stockPaddingBottom)));
-    _maxValue = double.parse(_toBeautiful(volumeRange.maxVolume + heightToVolume(stockPaddingTop)));
-    _volumeStep = double.parse(_toBeautiful(heightToVolume(kStepByY)));
     _segments = _calcSegments();
   }
 
   double get paintHeight => _height;
 
-  double get volumePerPixel => _volumePerPixel;
-
-  double get minValue => _minValue;
-
   List<DataPoint> get segments => _segments;
 
-  double heightToVolume(double height) => height * _volumePerPixel;
+  double _heightToVolume(double height) => height * _volumePerPixel;
 
-  double volumeToHeight(double volume) => volume / _volumePerPixel;
+  double _volumeToHeight(double volume) => volume / _volumePerPixel;
 
   List<DataPoint> _calcSegments() {
     final List<DataPoint> result = [];
-    final volumeHeight = double.parse(_toBeautiful(heightToVolume(_height)));
-    debugPrint('volumeHeight:$volumeHeight, volumeStep:$_volumeStep');
-    for (double y = _height; y >= 0; y -= kStepByY) {
-      final volume = heightToVolume(_height - y) + _minValue;
-      result.add(DataPoint(point: volumeToHeight(volume), value: _toBeautiful(volume)));
+    final fixed = _getFixed(volumeRange.maxVolume);
+    final minValue = double.parse(_toBeautiful(volumeRange.minVolume - _heightToVolume(stockPaddingBottom), fixed));
+    // final maxValue = double.parse(_toBeautiful(volumeRange.maxVolume + heightToVolume(stockPaddingTop), fixed));
+    final volumeStep = double.parse(_toBeautiful(_heightToVolume(kStepByY), fixed));
+    final volumeHeight = double.parse(_toBeautiful(_heightToVolume(_height), fixed));
+    debugPrint('volumeHeight:$volumeHeight, volumeStep:$volumeStep');
+    for (double volumeY = volumeHeight; volumeY >= 0; volumeY -= volumeStep) {
+      final volume = volumeHeight - volumeY + minValue;
+      result.add(DataPoint(point: _volumeToHeight(volumeY), value: volume.toStringAsFixed(fixed)));
     }
     return result;
   }
 
-  String _toBeautiful(double value) {
-    final fixed = _getFixed(value);
-    final entry = _cutToMaxLength(value, fixed, kMaximumNumberLength);
+  String _toBeautiful(double value, int fixed) {
+    final entry = _cutToMaxLength(value, fixed);
     final integer = (entry.value * 0.2).round() * 5;
     final divider = pow(10, entry.key);
 
@@ -81,10 +74,10 @@ class VolumePaintData {
     return fixed;
   }
 
-  MapEntry<int, int> _cutToMaxLength(double value, int fixed, int maxLength) {
+  MapEntry<int, int> _cutToMaxLength(double value, int fixed) {
     var str = value.toStringAsFixed(fixed);
-    if (str.length > maxLength + 1) {
-      str = str.substring(0, maxLength);
+    if (str.length > kMaximumNumberLength + 1) {
+      str = str.substring(0, kMaximumNumberLength);
     }
     final lst = str.split('.');
     final divider = lst.length > 1 ? lst[1].length : 0;

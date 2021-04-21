@@ -27,7 +27,7 @@ class _StocksPageState extends State<StocksPage> {
   void initState() {
     super.initState();
     volumePaintData = VolumePaintData(
-      volumeRange: const VolumeRange(minVolume: 227.09, maxVolume: 230.26),
+      volumeRange: const VolumeRange(minVolume: 76833, maxVolume: 77730),
       height: widget.height,
     );
     width = widget.width * 2;
@@ -86,7 +86,7 @@ class _StocksPageState extends State<StocksPage> {
                       SizedBox(
                         height: widget.height,
                         width: width,
-                        child: AxisXWidget(),
+                        child: AxisXWidget(volumePaintData: volumePaintData),
                       ),
                     ],
                   ),
