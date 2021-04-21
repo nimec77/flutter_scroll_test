@@ -11,3 +11,4 @@ const double kStockPaddingBottom = 20;
 const Color kLineColor = Colors.white12;
 const Color kAxisColor = Colors.white60;
 const TextStyle kTextAxisColor = TextStyle(color: Colors.white60, fontSize: 11);
+const int kMaximumNumberLength = 7;

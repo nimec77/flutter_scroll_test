@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
 import 'package:flutter_scroll_test/presentation/widgets/constants.dart';
 
@@ -20,10 +21,15 @@ class _StocksPageState extends State<StocksPage> {
   late final ScrollController scrollController;
   late final double scrollThreshold;
   late double width;
+  late VolumePaintData volumePaintData;
 
   @override
   void initState() {
     super.initState();
+    volumePaintData = VolumePaintData(
+      volumeRange: const VolumeRange(minVolume: 227.09, maxVolume: 230.26),
+      height: widget.height,
+    );
     width = widget.width * 2;
     scrollThreshold = math.max(widget.width / 5, 200);
     scrollController = ScrollController();
@@ -89,7 +95,7 @@ class _StocksPageState extends State<StocksPage> {
               SizedBox(
                 height: widget.height,
                 width: kIndentationX,
-                child: const AxisYWidget(volumeRange: VolumeRange(minVolume: 76480, maxVolume: 76900)),
+                child: AxisYWidget(volumePaintData: volumePaintData),
               ),
             ],
           );

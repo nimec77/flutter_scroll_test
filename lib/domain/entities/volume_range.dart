@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
 
 class VolumeRange {
   final double minVolume;
@@ -16,4 +16,7 @@ class VolumeRange {
 
   @override
   int get hashCode => hashValues(minVolume, maxVolume);
+
+  @override
+  String toString() => 'VolumeRange(minVolume:$minVolume, maxVolume:$maxVolume)';
 }

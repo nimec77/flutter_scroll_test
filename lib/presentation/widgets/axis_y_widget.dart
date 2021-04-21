@@ -1,35 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
 
 import 'constants.dart';
 
 class AxisYWidget extends StatelessWidget {
-  final VolumeRange volumeRange;
+  final VolumePaintData volumePaintData;
 
-  const AxisYWidget({Key? key, required this.volumeRange}) : super(key: key);
+  const AxisYWidget({Key? key, required this.volumePaintData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _AxisYWidgetPainter(volumeRange),
+      painter: _AxisYWidgetPainter(volumePaintData),
     );
   }
 }
 
 class _AxisYWidgetPainter extends CustomPainter {
-  final VolumeRange volumeRange;
+  final VolumePaintData volumePaintData;
 
-  _AxisYWidgetPainter(this.volumeRange);
+  _AxisYWidgetPainter(this.volumePaintData);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = kAxisColor;
 
-    final height = size.height - kIndentationY;
+    final height = volumePaintData.paintHeight;
     final width = size.width - kIndentationX;
-    final volumePerPixel =
-        (volumeRange.maxVolume - volumeRange.minVolume) / (height - kStockPaddingBottom - kStockPaddingTop);
-    final minVolume = volumeRange.minVolume - kStockPaddingBottom * volumePerPixel;
 
     canvas.drawLine(
       Offset(width, 0),
@@ -37,23 +35,21 @@ class _AxisYWidgetPainter extends CustomPainter {
       paint,
     );
 
-    for (double y = height; y >= 0; y -= kStepByY) {
+    for (final segment in volumePaintData.segments) {
       canvas.drawLine(
-        Offset(width, y),
-        Offset(width + 4, y),
+        Offset(width, segment.point),
+        Offset(width + 4, segment.point),
         paint,
       );
-      final volume = (height - y) * volumePerPixel + minVolume;
-      final value = volume.toStringAsFixed(0);
-      final textSpan = TextSpan(text: value, style: kTextAxisColor);
+      final textSpan = TextSpan(text: segment.value, style: kTextAxisColor);
       final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
       textPainter.layout(maxWidth: kIndentationX);
-      textPainter.paint(canvas, Offset(width + 8, y - textPainter.height / 2));
+      textPainter.paint(canvas, Offset(width + 8, segment.point - textPainter.height / 2));
     }
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return oldDelegate is! _AxisYWidgetPainter || oldDelegate.volumeRange != volumeRange;
+    return oldDelegate is! _AxisYWidgetPainter || oldDelegate.volumePaintData != volumePaintData;
   }
 }
