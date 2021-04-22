@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -13,7 +14,7 @@ class VolumePaintData {
   final double stockPaddingTop;
   late final double _height;
   late final double _volumePerPixel;
-  late final List<DataPoint> _segments;
+  late final UnmodifiableListView<DataPoint> _segments;
 
   VolumePaintData({
     required this.volumeRange,
@@ -28,13 +29,13 @@ class VolumePaintData {
 
   double get paintHeight => _height;
 
-  List<DataPoint> get segments => _segments;
+  UnmodifiableListView<DataPoint> get segments => _segments;
 
   double _heightToVolume(double height) => height * _volumePerPixel;
 
   double _volumeToHeight(double volume) => volume / _volumePerPixel;
 
-  List<DataPoint> _calcSegments() {
+  UnmodifiableListView<DataPoint> _calcSegments() {
     final List<DataPoint> result = [];
     final fixed = _getFixed(volumeRange.maxVolume);
     final minValue = double.parse(_toBeautiful(volumeRange.minVolume - _heightToVolume(stockPaddingBottom), fixed));
@@ -46,7 +47,7 @@ class VolumePaintData {
       final volume = volumeHeight - volumeY + minValue;
       result.add(DataPoint(point: _volumeToHeight(volumeY), value: volume.toStringAsFixed(fixed)));
     }
-    return result;
+    return UnmodifiableListView(result);
   }
 
   String _toBeautiful(double value, int fixed) {
