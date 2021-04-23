@@ -12,6 +12,15 @@ class TimelineRound {
     _init();
   }
 
+  int get inMilliseconds => _milliseconds;
+
+  int round(double value) {
+    final factor = _doubleRounding ? 5 : 10;
+    final time = value / _roundingNumber;
+    final rounded = (time / factor).round() * factor;
+    return rounded * _roundingNumber;
+  }
+
   void _init() {
     switch (stockInterval) {
       case StockInterval.oneMin:
@@ -74,14 +83,5 @@ class TimelineRound {
         _doubleRounding = false;
         break;
     }
-  }
-
-  int get inMilliseconds => _milliseconds;
-
-  int round(double value) {
-    final factor = _doubleRounding ? 5 : 10;
-    final time = value / _roundingNumber;
-    final rounded = (time / factor).round() * factor;
-    return rounded * _roundingNumber;
   }
 }
