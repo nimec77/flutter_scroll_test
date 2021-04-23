@@ -32,7 +32,7 @@ class _StocksPageState extends State<StocksPage> {
     width = widget.width * 2;
     timelinePaintData = TimelinePaintData(
       startTime: DateTime(2021, 4, 23, 16, 32),
-      stockInterval: StockInterval.oneMin,
+      stockInterval: StockInterval.fiveMin,
       width: width,
     );
     volumePaintData = VolumePaintData(
@@ -51,7 +51,7 @@ class _StocksPageState extends State<StocksPage> {
           width += widget.width;
           timelinePaintData = TimelinePaintData(
             startTime: DateTime(2021, 4, 23, 16, 32),
-            stockInterval: StockInterval.oneMin,
+            stockInterval: StockInterval.fiveMin,
             width: width,
           );
         });
