@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_scroll_test/domain/entities/timeline_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 
 import 'constants.dart';
 
 class AxisXWidget extends StatelessWidget {
+  final TimelinePaintData timelinePaintData;
   final VolumePaintData volumePaintData;
 
-  const AxisXWidget({Key? key, required this.volumePaintData}) : super(key: key);
+  const AxisXWidget({Key? key, required this.timelinePaintData, required this.volumePaintData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _AxisXWidgetPainter(volumePaintData),
+      painter: _AxisXWidgetPainter(timelinePaintData, volumePaintData),
+      isComplex: true,
     );
   }
 }
 
 class _AxisXWidgetPainter extends CustomPainter {
+  final TimelinePaintData timelinePaintData;
   final VolumePaintData volumePaintData;
 
-  _AxisXWidgetPainter(this.volumePaintData);
+  _AxisXWidgetPainter(this.timelinePaintData, this.volumePaintData);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -28,26 +32,27 @@ class _AxisXWidgetPainter extends CustomPainter {
 
     final height = volumePaintData.paintHeight;
 
-    final width = size.width;
+    final width = timelinePaintData.width;
 
-    for (final segment in volumePaintData.segments) {
+    for (final segmentByY in volumePaintData.segmentsByY) {
       canvas.drawLine(
-        Offset(0, segment.point),
-        Offset(width, segment.point),
+        Offset(0, segmentByY.point),
+        Offset(width, segmentByY.point),
         linePaint,
       );
     }
-    for (double x = width; x >= 0; x -= kStepByX) {
+    for (final segmentByX in timelinePaintData.segmentsByX) {
       canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, height),
+        Offset(segmentByX.point, 0),
+        Offset(segmentByX.point, height),
         linePaint,
       );
-      final textSpan = TextSpan(text: '${width - x}', style: kTextAxisColor);
+      final textSpan = TextSpan(text: segmentByX.value, style: kTextAxisColor);
       final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
-      textPainter.layout(maxWidth: kStepByX - 5);
-      textPainter.paint(canvas, Offset(x - textPainter.width / 2, height + 4));
+      textPainter.layout(maxWidth: kStepX - 5);
+      textPainter.paint(canvas, Offset(segmentByX.point - textPainter.width / 2, height + 4));
     }
+    for (double x = width; x >= 0; x -= kStepX) {}
 
     canvas.drawLine(
       Offset(0, height),
@@ -58,6 +63,8 @@ class _AxisXWidgetPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return oldDelegate is! _AxisXWidgetPainter || oldDelegate.volumePaintData != volumePaintData;
+    return oldDelegate is! _AxisXWidgetPainter ||
+        oldDelegate.timelinePaintData != timelinePaintData ||
+        oldDelegate.volumePaintData != volumePaintData;
   }
 }

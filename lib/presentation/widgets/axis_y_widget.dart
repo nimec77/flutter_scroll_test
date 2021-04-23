@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
-import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
 
 import 'constants.dart';
 
@@ -13,6 +12,7 @@ class AxisYWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _AxisYWidgetPainter(volumePaintData),
+      isComplex: true,
     );
   }
 }
@@ -35,7 +35,7 @@ class _AxisYWidgetPainter extends CustomPainter {
       paint,
     );
 
-    for (final segment in volumePaintData.segments) {
+    for (final segment in volumePaintData.segmentsByY) {
       canvas.drawLine(
         Offset(width, segment.point),
         Offset(width + 4, segment.point),

@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_scroll_test/domain/entities/timeline_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
+import 'package:flutter_scroll_test/domain/enums/stock_interval.dart';
 import 'package:flutter_scroll_test/presentation/widgets/constants.dart';
 
 import '../widgets/axis_x_widget.dart';
@@ -21,16 +23,22 @@ class _StocksPageState extends State<StocksPage> {
   late final ScrollController scrollController;
   late final double scrollThreshold;
   late double width;
+  late TimelinePaintData timelinePaintData;
   late VolumePaintData volumePaintData;
 
   @override
   void initState() {
     super.initState();
+    width = widget.width * 2;
+    timelinePaintData = TimelinePaintData(
+      startTime: DateTime(2021, 4, 23, 16, 32),
+      stockInterval: StockInterval.oneMin,
+      width: width,
+    );
     volumePaintData = VolumePaintData(
       volumeRange: const VolumeRange(minVolume: 76833, maxVolume: 77730),
       height: widget.height,
     );
-    width = widget.width * 2;
     scrollThreshold = math.max(widget.width / 5, 200);
     scrollController = ScrollController();
     scrollController.addListener(() {
@@ -41,6 +49,11 @@ class _StocksPageState extends State<StocksPage> {
         // debugPrint('Need to expand!');
         setState(() {
           width += widget.width;
+          timelinePaintData = TimelinePaintData(
+            startTime: DateTime(2021, 4, 23, 16, 32),
+            stockInterval: StockInterval.oneMin,
+            width: width,
+          );
         });
       }
     });
@@ -86,7 +99,7 @@ class _StocksPageState extends State<StocksPage> {
                       SizedBox(
                         height: widget.height,
                         width: width,
-                        child: AxisXWidget(volumePaintData: volumePaintData),
+                        child: AxisXWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
                       ),
                     ],
                   ),
