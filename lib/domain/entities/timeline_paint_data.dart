@@ -39,7 +39,7 @@ class TimelinePaintData {
   UnmodifiableListView<DataPoint> _calcSegments() {
     final List<DataPoint> result = [];
     final stepInMilliseconds = _widthToMilliseconds(stepX);
-    final widthInMilliseconds = _timelineRound.round(_widthToMilliseconds(width)) - stepInMilliseconds;
+    final widthInMilliseconds = _timelineRound.round(_widthToMilliseconds(width)).toDouble();
     final startTimeInMilliseconds = _timelineRound.round(startTime.millisecondsSinceEpoch.toDouble());
     for (double millisecondsX = widthInMilliseconds; millisecondsX >= 0; millisecondsX -= stepInMilliseconds) {
       final time = DateTime.fromMillisecondsSinceEpoch((startTimeInMilliseconds - millisecondsX).toInt());

@@ -6,7 +6,6 @@ class TimelineRound {
 
   late final int _milliseconds;
   late final int _roundingNumber;
-  late final bool _doubleRounding;
 
   TimelineRound(this.stockInterval) {
     _init();
@@ -15,9 +14,8 @@ class TimelineRound {
   int get inMilliseconds => _milliseconds;
 
   int round(double value) {
-    final factor = _doubleRounding ? 5 : 10;
     final time = value / _roundingNumber;
-    final rounded = (time / factor).round() * factor;
+    final rounded = (time * 0.1).round() * 10;
     return rounded * _roundingNumber;
   }
 
@@ -25,62 +23,51 @@ class TimelineRound {
     switch (stockInterval) {
       case StockInterval.oneMin:
         _milliseconds = kOneMinStep.inMilliseconds;
-        _roundingNumber = Duration.millisecondsPerMinute;
-        _doubleRounding = true;
+        _roundingNumber = Duration.millisecondsPerMinute * 15;
         break;
 
       case StockInterval.threeMin:
         _milliseconds = kThreeMinStep.inMilliseconds;
         _roundingNumber = Duration.millisecondsPerHour;
-        _doubleRounding = false;
         break;
 
       case StockInterval.fiveMin:
-        // TODO: разбираюсь с округлением до 1:30
         _milliseconds = kFiveMinStep.inMilliseconds;
-        _roundingNumber = Duration.millisecondsPerMinute;
-        _doubleRounding = false;
+        _roundingNumber = Duration.millisecondsPerHour ~/ 2;
         break;
 
       case StockInterval.tenMin:
         _milliseconds = kTenMinStep.inMilliseconds;
-        _roundingNumber = Duration.millisecondsPerHour;
-        _doubleRounding = false;
+        _roundingNumber = Duration.millisecondsPerHour * 3;
         break;
 
       case StockInterval.fifteenMin:
         _milliseconds = kFifteenMinStep.inMilliseconds;
         _roundingNumber = Duration.millisecondsPerHour;
-        _doubleRounding = false;
         break;
 
       case StockInterval.thirtyMin:
         _milliseconds = kThreeMinStep.inMilliseconds;
         _roundingNumber = Duration.millisecondsPerHour;
-        _doubleRounding = false;
         break;
 
       case StockInterval.hour:
         _milliseconds = kHourStep.inMilliseconds;
         _roundingNumber = Duration.millisecondsPerDay;
-        _doubleRounding = false;
         break;
 
       case StockInterval.day:
         _milliseconds = kDayStep.inMilliseconds;
-        _doubleRounding = false;
         break;
 
       case StockInterval.week:
         _milliseconds = kWeekStep.inMilliseconds;
         _roundingNumber = Duration.millisecondsPerDay * 30;
-        _doubleRounding = false;
         break;
 
       case StockInterval.month:
         _milliseconds = kMonthStep.inMilliseconds;
         _roundingNumber = Duration.millisecondsPerDay * 365;
-        _doubleRounding = false;
         break;
     }
   }
