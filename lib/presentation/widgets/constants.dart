@@ -22,4 +22,4 @@ const Duration kHourStep = Duration(days: 1);
 const Duration kDayStep = Duration(days: 30);
 const Duration kWeekStep = Duration(days: 3 * 30);
 const Duration kMonthStep = Duration(days: 2 * 365);
-final DateFormat kHourMinuteFormat = DateFormat.jm();
+final DateFormat kHourMinuteFormat = DateFormat.jm('ru');

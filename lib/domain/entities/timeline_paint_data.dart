@@ -39,10 +39,15 @@ class TimelinePaintData {
   UnmodifiableListView<DataPoint> _calcSegments() {
     final List<DataPoint> result = [];
     final stepInMilliseconds = _widthToMilliseconds(stepX);
-    final startTimeInMilliseconds = _timelineRound.round(startTime.millisecondsSinceEpoch.toDouble());
-    final widthInMilliseconds = _timelineRound.round(_widthToMilliseconds(width)).toDouble();
+    int startTimeInMilliseconds = _timelineRound.round(startTime.millisecondsSinceEpoch.toDouble());
+    if (startTimeInMilliseconds < startTime.millisecondsSinceEpoch) {
+      startTimeInMilliseconds += stepInMilliseconds.toInt();
+    }
+    final widthInMilliseconds = _widthToMilliseconds(width);
     for (double millisecondsX = widthInMilliseconds; millisecondsX >= 0; millisecondsX -= stepInMilliseconds) {
-      final time = DateTime.fromMillisecondsSinceEpoch((startTimeInMilliseconds - millisecondsX).toInt(), isUtc: true);
+      final time = DateTime.fromMillisecondsSinceEpoch(
+          (startTimeInMilliseconds - widthInMilliseconds + millisecondsX).toInt(),
+          isUtc: true);
       result.add(DataPoint(point: _millisecondsToWidth(millisecondsX), value: kHourMinuteFormat.format(time)));
     }
     return UnmodifiableListView(result);
