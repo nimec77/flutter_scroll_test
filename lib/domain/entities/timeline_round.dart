@@ -14,8 +14,6 @@ class TimelineRound {
 
   int round(double value) {
     final time = value / _milliseconds;
-    // final rounded = time.round() * _milliseconds;
-    // print(DateTime.fromMillisecondsSinceEpoch(rounded, isUtc: true));
     return time.round() * _milliseconds;
   }
 

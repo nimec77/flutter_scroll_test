@@ -43,7 +43,7 @@ class TimelinePaintData {
     if (startTimeInMilliseconds < startTime.millisecondsSinceEpoch) {
       startTimeInMilliseconds += stepInMilliseconds.toInt();
     }
-    final widthInMilliseconds = _widthToMilliseconds(width);
+    final widthInMilliseconds = _widthToMilliseconds(_width);
     for (double millisecondsX = widthInMilliseconds; millisecondsX >= 0; millisecondsX -= stepInMilliseconds) {
       final time = DateTime.fromMillisecondsSinceEpoch(
           (startTimeInMilliseconds - widthInMilliseconds + millisecondsX).toInt(),

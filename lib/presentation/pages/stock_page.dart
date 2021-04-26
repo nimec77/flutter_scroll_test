@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_scroll_test/domain/entities/timeline_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
@@ -25,14 +26,20 @@ class _StocksPageState extends State<StocksPage> {
   late double width;
   late TimelinePaintData timelinePaintData;
   late VolumePaintData volumePaintData;
+  late bool showPrice;
+  late Offset position;
+  late Size size;
 
   @override
   void initState() {
     super.initState();
+    showPrice = false;
+    position = Offset.zero;
+    size = Size.zero;
     width = widget.width * 2;
     timelinePaintData = TimelinePaintData(
       startTime: DateTime.utc(2021, 4, 23, 16, 32),
-      stockInterval: StockInterval.oneMin,
+      stockInterval: StockInterval.fifteenMin,
       width: width,
     );
     volumePaintData = VolumePaintData(
@@ -44,14 +51,12 @@ class _StocksPageState extends State<StocksPage> {
     scrollController.addListener(() {
       final maxScroll = scrollController.position.maxScrollExtent;
       final currentScroll = scrollController.position.pixels;
-      // debugPrint('maxScroll:$maxScroll, currentScroll:$currentScroll');
       if (maxScroll - currentScroll <= scrollThreshold) {
-        // debugPrint('Need to expand!');
         setState(() {
           width += widget.width;
           timelinePaintData = TimelinePaintData(
             startTime: DateTime.utc(2021, 4, 23, 16, 32),
-            stockInterval: StockInterval.oneMin,
+            stockInterval: StockInterval.fifteenMin,
             width: width,
           );
         });
@@ -67,8 +72,6 @@ class _StocksPageState extends State<StocksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    debugPrint(size.toString());
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constrains) {
@@ -81,26 +84,61 @@ class _StocksPageState extends State<StocksPage> {
                   controller: scrollController,
                   child: Stack(
                     children: [
-                      // Container(
-                      //   height: 500,
-                      //   width: width,
-                      //   decoration: const BoxDecoration(
-                      //     gradient: LinearGradient(begin: Alignment.centerRight, end: Alignment.centerLeft, colors: [
-                      //       Colors.red,
-                      //       Colors.orange,
-                      //       Colors.yellow,
-                      //       Colors.green,
-                      //       Colors.lightBlue,
-                      //       Colors.blue,
-                      //       Colors.purple,
-                      //     ]),
-                      //   ),
-                      // ),
                       SizedBox(
                         height: widget.height,
                         width: width,
-                        child: AxisXWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
+                        child: GestureDetector(
+                          onDoubleTap: () {
+                            setState(() {
+                              showPrice = !showPrice;
+                              debugPrint('Showing ${showPrice ? "On" : "Off"}');
+                            });
+                          },
+                          onPanStart: showPrice
+                              ? (details) {
+                                  debugPrint('Pan start');
+                                  setState(() {
+                                    final box = context.findRenderObject()! as RenderBox;
+                                    size = box.size;
+                                    position = details.globalPosition;
+                                    debugPrint(position.toString());
+                                  });
+                                }
+                              : null,
+                          onPanUpdate: showPrice
+                              ? (details) {
+                                  setState(() {
+                                    final box = context.findRenderObject()! as RenderBox;
+                                    size = box.size;
+                                    position = details.globalPosition;
+                                    debugPrint('global:$position, size:$size');
+                                  });
+                                }
+                              : null,
+                          // onPanEnd: (details) {
+                          //   debugPrint('Pan end');
+                          //   // setState(() {
+                          //   //   showPrice = false;
+                          //   // });
+                          // },
+                          child: AxisXWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
+                        ),
                       ),
+                      if (showPrice)
+                        Positioned(
+                          // TODO: я не знаю откуда эти магические цифры
+                          // TODO: разобраться с координатами x при прокрутки
+                          top: position.dy - 55,
+                          right: size.width - position.dx - 115,
+                          height: 100,
+                          width: 100,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
