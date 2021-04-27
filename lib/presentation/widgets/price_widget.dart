@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter_scroll_test/presentation/widgets/constants.dart';
+import 'package:flutter_scroll_test/domain/entities/timeline_paint_data.dart';
+import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
+import 'package:flutter_scroll_test/presentation/constants.dart';
 
 class PriceWidget extends StatefulWidget {
+  final TimelinePaintData timelinePaintData;
+  final VolumePaintData volumePaintData;
+
+  const PriceWidget({Key? key, required this.timelinePaintData, required this.volumePaintData}) : super(key: key);
+
   @override
   _PriceWidgetState createState() => _PriceWidgetState();
 }
@@ -18,33 +25,71 @@ class _PriceWidgetState extends State<PriceWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final height = widget.volumePaintData.paintHeight;
+    final width = widget.timelinePaintData.paintWidth;
     return GestureDetector(
       onPanStart: (details) {
-        // debugPrint('global:${details.globalPosition}, local:${details.localPosition}');
-        setState(() {
-          position = details.localPosition;
-        });
+        if (details.localPosition.dx < width && details.localPosition.dy < height) {
+          setState(() {
+            position = details.localPosition;
+          });
+        }
       },
       onPanUpdate: (details) {
-        // debugPrint('global:${details.globalPosition}, local:${details.localPosition}');
-        setState(() {
-          position = details.localPosition;
-        });
+        if (details.localPosition.dx < width && details.localPosition.dy < height) {
+          setState(() {
+            position = details.localPosition;
+          });
+        }
       },
       child: CustomPaint(
-        painter: _PriceWidgetPainter(position),
+        painter: _PriceWidgetPainter(widget.timelinePaintData, height, position),
+        isComplex: true,
       ),
     );
   }
 }
 
 class _PriceWidgetPainter extends CustomPainter {
+  final TimelinePaintData timelinePaintData;
+  final double height;
   final Offset position;
 
-  _PriceWidgetPainter(this.position);
+  _PriceWidgetPainter(this.timelinePaintData, this.height, this.position);
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (position == Offset.zero) {
+      return;
+    }
+    _drawDashedLines(canvas, size);
+    _drawCross(canvas);
+    _drawPrice(canvas);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return !identical(oldDelegate, this) ||
+        oldDelegate is! _PriceWidgetPainter ||
+        oldDelegate.timelinePaintData != timelinePaintData ||
+        oldDelegate.height != height ||
+        oldDelegate.position != position;
+  }
+
+  void _drawDashedLines(Canvas canvas, Size size) {
+    final dashedLinePaint = Paint()..color = kDashColor;
+    final step = kDashWidth + kDashSpace;
+
+    for (double x = size.width; x > kDashWidth; x -= step) {
+      canvas.drawLine(Offset(x, position.dy), Offset(x - kDashWidth, position.dy), dashedLinePaint);
+    }
+
+    for (double y = height; y > kDashWidth; y -= step) {
+      canvas.drawLine(Offset(position.dx, y), Offset(position.dx, y - kDashWidth), dashedLinePaint);
+    }
+  }
+
+  void _drawCross(Canvas canvas) {
     final crossPath = Path();
 
     crossPath
@@ -75,8 +120,20 @@ class _PriceWidgetPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  void _drawPrice(Canvas canvas) {
+    final paint = Paint()..color = kTextPriceBackgroundColor;
+    final textSpan =
+        TextSpan(text: kPriceDateFormat.format(timelinePaintData.dxToDateTime(position.dx)), style: kTextPriceStyle);
+    final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.center, textDirection: TextDirection.ltr);
+    textPainter.layout(maxWidth: kStepX - 4);
+    canvas.drawRect(
+      Rect.fromCenter(
+        center: Offset(position.dx, height + textPainter.height / 2 + kTextPricePadding),
+        width: textPainter.width + 2 * kTextPricePadding,
+        height: textPainter.height + 2 * kTextPricePadding,
+      ),
+      paint,
+    );
+    textPainter.paint(canvas, Offset(position.dx - textPainter.width / 2, height + kTextPricePadding));
   }
 }

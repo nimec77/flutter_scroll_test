@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class AxisYWidget extends StatelessWidget {
   final VolumePaintData volumePaintData;
@@ -41,7 +41,7 @@ class _AxisYWidgetPainter extends CustomPainter {
         Offset(width + 4, segment.point),
         paint,
       );
-      final textSpan = TextSpan(text: segment.value, style: kTextAxisColor);
+      final textSpan = TextSpan(text: segment.value, style: kTextAxisStyle);
       final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
       textPainter.layout(maxWidth: kIndentationX);
       textPainter.paint(canvas, Offset(width + 8, segment.point - textPainter.height / 2));

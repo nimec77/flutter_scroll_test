@@ -1,5 +1,5 @@
 import 'package:flutter_scroll_test/domain/enums/stock_interval.dart';
-import 'package:flutter_scroll_test/presentation/widgets/constants.dart';
+import 'package:flutter_scroll_test/presentation/constants.dart';
 
 class TimelineRound {
   final StockInterval stockInterval;

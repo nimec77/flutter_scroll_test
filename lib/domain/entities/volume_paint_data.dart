@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter_scroll_test/domain/entities/data_point.dart';
-import 'package:flutter_scroll_test/presentation/widgets/constants.dart';
+import 'package:flutter_scroll_test/presentation/constants.dart';
 
 import 'volume_range.dart';
 

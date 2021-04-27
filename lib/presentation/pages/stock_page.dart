@@ -5,7 +5,7 @@ import 'package:flutter_scroll_test/domain/entities/timeline_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
 import 'package:flutter_scroll_test/domain/enums/stock_interval.dart';
-import 'package:flutter_scroll_test/presentation/widgets/constants.dart';
+import 'package:flutter_scroll_test/presentation/constants.dart';
 import 'package:flutter_scroll_test/presentation/widgets/price_widget.dart';
 
 import '../widgets/axis_x_widget.dart';
@@ -89,7 +89,7 @@ class _StocksPageState extends State<StocksPage> {
                       SizedBox(
                         height: widget.height,
                         width: width,
-                        child: PriceWidget(),
+                        child: PriceWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
                       ),
                     ],
                   ),

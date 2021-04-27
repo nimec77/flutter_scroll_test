@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_scroll_test/domain/entities/timeline_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class AxisXWidget extends StatelessWidget {
   final TimelinePaintData timelinePaintData;
@@ -47,9 +47,9 @@ class _AxisXWidgetPainter extends CustomPainter {
         Offset(segmentByX.point, height),
         linePaint,
       );
-      final textSpan = TextSpan(text: segmentByX.value, style: kTextAxisColor);
+      final textSpan = TextSpan(text: segmentByX.value, style: kTextAxisStyle);
       final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
-      textPainter.layout(maxWidth: kStepX - 5);
+      textPainter.layout(maxWidth: kStepX - 4);
       textPainter.paint(canvas, Offset(segmentByX.point - textPainter.width / 2, height + 4));
     }
     for (double x = width; x >= 0; x -= kStepX) {}
