@@ -63,7 +63,8 @@ class _AxisXWidgetPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return oldDelegate is! _AxisXWidgetPainter ||
+    return !identical(oldDelegate, this) ||
+        oldDelegate is! _AxisXWidgetPainter ||
         oldDelegate.timelinePaintData != timelinePaintData ||
         oldDelegate.volumePaintData != volumePaintData;
   }

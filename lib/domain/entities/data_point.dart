@@ -8,7 +8,7 @@ class DataPoint {
 
   @override
   bool operator ==(Object other) {
-    return other is DataPoint && other.point == point && other.value == value;
+    return identical(other, this) || other is DataPoint && other.point == point && other.value == value;
   }
 
   @override

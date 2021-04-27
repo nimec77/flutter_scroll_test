@@ -59,7 +59,7 @@ class TimelinePaintData {
 
   @override
   bool operator ==(Object other) {
-    return other is TimelinePaintData && other.startTime == startTime && other.width == width;
+    return identical(other, this) || other is TimelinePaintData && other.startTime == startTime && other.width == width;
   }
 
   @override

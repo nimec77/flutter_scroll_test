@@ -94,7 +94,8 @@ class VolumePaintData {
 
   @override
   bool operator ==(Object other) {
-    return other is VolumePaintData && other.volumeRange == volumeRange && other.height == height;
+    return identical(other, this) ||
+        other is VolumePaintData && other.volumeRange == volumeRange && other.height == height;
   }
 
   @override

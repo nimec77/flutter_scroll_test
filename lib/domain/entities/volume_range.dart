@@ -11,7 +11,8 @@ class VolumeRange {
 
   @override
   bool operator ==(Object other) {
-    return other is VolumeRange && other.maxVolume == maxVolume && other.minVolume == minVolume;
+    return identical(other, this) ||
+        other is VolumeRange && other.maxVolume == maxVolume && other.minVolume == minVolume;
   }
 
   @override
