@@ -35,3 +35,4 @@ const TextStyle kTextPriceStyle = TextStyle(color: Colors.white, fontSize: 12);
 const double kTextPricePadding = 4;
 final DateFormat kPriceDateFormat = DateFormat('d MMM yy HH:mm', 'ru'); // "27 Апр'21 9:45"
 const Color kTextPriceBackgroundColor = Color(0xff757575);
+const double kHatchWidth = 4;

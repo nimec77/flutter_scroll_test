@@ -47,12 +47,16 @@ class _AxisXWidgetPainter extends CustomPainter {
         Offset(segmentByX.point, height),
         linePaint,
       );
+      canvas.drawLine(
+        Offset(segmentByX.point, height),
+        Offset(segmentByX.point, height + kHatchWidth),
+        axisPaint,
+      );
       final textSpan = TextSpan(text: segmentByX.value, style: kTextAxisStyle);
       final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
       textPainter.layout(maxWidth: kStepX - 4);
-      textPainter.paint(canvas, Offset(segmentByX.point - textPainter.width / 2, height + 4));
+      textPainter.paint(canvas, Offset(segmentByX.point - textPainter.width / 2, height + kHatchWidth + 4));
     }
-    for (double x = width; x >= 0; x -= kStepX) {}
 
     canvas.drawLine(
       Offset(0, height),

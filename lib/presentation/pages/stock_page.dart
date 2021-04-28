@@ -32,7 +32,7 @@ class _StocksPageState extends State<StocksPage> {
   @override
   void initState() {
     super.initState();
-    showPrice = false;
+    showPrice = true;
     width = widget.width * 2;
     timelinePaintData = TimelinePaintData(
       startTime: DateTime.utc(2021, 4, 23, 16, 32),
@@ -77,7 +77,15 @@ class _StocksPageState extends State<StocksPage> {
               Expanded(
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (scrollNotification) {
-                    debugPrint(scrollNotification.toString());
+                    if (scrollNotification is ScrollStartNotification) {
+                      setState(() {
+                        showPrice = false;
+                      });
+                    } else if (scrollNotification is ScrollEndNotification) {
+                      setState(() {
+                        showPrice = true;
+                      });
+                    }
                     return true;
                   },
                   child: SingleChildScrollView(
@@ -91,11 +99,12 @@ class _StocksPageState extends State<StocksPage> {
                           width: width,
                           child: AxisXWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
                         ),
-                        SizedBox(
-                          height: widget.height,
-                          width: width,
-                          child: PriceWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
-                        ),
+                        if (showPrice)
+                          SizedBox(
+                            height: widget.height,
+                            width: width,
+                            child: PriceWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
+                          ),
                       ],
                     ),
                   ),

@@ -38,7 +38,7 @@ class _AxisYWidgetPainter extends CustomPainter {
     for (final segment in volumePaintData.segmentsByY) {
       canvas.drawLine(
         Offset(width, segment.point),
-        Offset(width + 4, segment.point),
+        Offset(width + kHatchWidth, segment.point),
         paint,
       );
       final textSpan = TextSpan(text: segment.value, style: kTextAxisStyle);
