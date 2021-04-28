@@ -75,23 +75,29 @@ class _StocksPageState extends State<StocksPage> {
           return Row(
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  scrollDirection: Axis.horizontal,
-                  controller: scrollController,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        height: widget.height,
-                        width: width,
-                        child: AxisXWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
-                      ),
-                      SizedBox(
-                        height: widget.height,
-                        width: width,
-                        child: PriceWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
-                      ),
-                    ],
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (scrollNotification) {
+                    debugPrint(scrollNotification.toString());
+                    return true;
+                  },
+                  child: SingleChildScrollView(
+                    reverse: true,
+                    scrollDirection: Axis.horizontal,
+                    controller: scrollController,
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          height: widget.height,
+                          width: width,
+                          child: AxisXWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
+                        ),
+                        SizedBox(
+                          height: widget.height,
+                          width: width,
+                          child: PriceWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

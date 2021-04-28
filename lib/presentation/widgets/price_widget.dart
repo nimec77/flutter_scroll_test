@@ -27,20 +27,25 @@ class _PriceWidgetState extends State<PriceWidget> {
   Widget build(BuildContext context) {
     final height = widget.volumePaintData.paintHeight;
     final width = widget.timelinePaintData.paintWidth;
-    return GestureDetector(
-      onPanStart: (details) {
+    return MouseRegion(
+      onEnter: (details) {
         if (details.localPosition.dx < width && details.localPosition.dy < height) {
           setState(() {
             position = details.localPosition;
           });
         }
       },
-      onPanUpdate: (details) {
+      onHover: (details) {
         if (details.localPosition.dx < width && details.localPosition.dy < height) {
           setState(() {
             position = details.localPosition;
           });
         }
+      },
+      onExit: (details) {
+        setState(() {
+          position = Offset.zero;
+        });
       },
       child: CustomPaint(
         painter: _PriceWidgetPainter(widget.timelinePaintData, height, position),
@@ -69,12 +74,20 @@ class _PriceWidgetPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return !identical(oldDelegate, this) ||
-        oldDelegate is! _PriceWidgetPainter ||
-        oldDelegate.timelinePaintData != timelinePaintData ||
-        oldDelegate.height != height ||
-        oldDelegate.position != position;
+    return oldDelegate != this;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(other, this) ||
+        other is _PriceWidgetPainter &&
+            other.timelinePaintData == timelinePaintData &&
+            other.height == height &&
+            other.position == position;
+  }
+
+  @override
+  int get hashCode => hashValues(timelinePaintData, height, position);
 
   void _drawDashedLines(Canvas canvas, Size size) {
     final dashedLinePaint = Paint()..color = kDashColor;

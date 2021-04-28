@@ -50,8 +50,15 @@ class _AxisYWidgetPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return !identical(oldDelegate, this) ||
-        oldDelegate is! _AxisYWidgetPainter ||
-        oldDelegate.volumePaintData != volumePaintData;
+    return oldDelegate != this;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(other, this) || other is _AxisYWidgetPainter && other.volumePaintData == volumePaintData;
+  }
+
+  @override
+  int get hashCode => volumePaintData.hashCode;
+
 }
