@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_scroll_test/presentation/inherited_widgets/price_position_inherited_widget.dart';
 import 'package:flutter_scroll_test/presentation/pages/stock_page.dart';
 
 void main() {
@@ -23,7 +24,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Builder(
         builder: (context) {
-          return StocksPage(width: MediaQuery.of(context).size.width, height: 500);
+          return PricePositionInheritedWidget(
+            priceNotifier: ValueNotifier(Offset.zero),
+            child: StocksPage(width: MediaQuery.of(context).size.width, height: 500),
+          );
         },
       ),
     );

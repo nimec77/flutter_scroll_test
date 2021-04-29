@@ -6,6 +6,7 @@ import 'package:flutter_scroll_test/domain/entities/volume_paint_data.dart';
 import 'package:flutter_scroll_test/domain/entities/volume_range.dart';
 import 'package:flutter_scroll_test/domain/enums/stock_interval.dart';
 import 'package:flutter_scroll_test/presentation/constants.dart';
+import 'package:flutter_scroll_test/presentation/inherited_widgets/price_position_inherited_widget.dart';
 import 'package:flutter_scroll_test/presentation/widgets/price_widget.dart';
 
 import '../widgets/axis_x_widget.dart';
@@ -24,6 +25,7 @@ class StocksPage extends StatefulWidget {
 class _StocksPageState extends State<StocksPage> {
   late final ScrollController scrollController;
   late final double scrollThreshold;
+  late final ValueNotifier<Offset> priceNotifier;
   late double width;
   late TimelinePaintData timelinePaintData;
   late VolumePaintData volumePaintData;
@@ -33,6 +35,7 @@ class _StocksPageState extends State<StocksPage> {
   void initState() {
     super.initState();
     showPrice = true;
+    priceNotifier = PricePositionInheritedWidget.of(context, listen: false);
     width = widget.width * 2;
     timelinePaintData = TimelinePaintData(
       startTime: DateTime.utc(2021, 4, 23, 16, 32),
@@ -103,17 +106,29 @@ class _StocksPageState extends State<StocksPage> {
                           SizedBox(
                             height: widget.height,
                             width: width,
-                            child: PriceWidget(timelinePaintData: timelinePaintData, volumePaintData: volumePaintData),
+                            child: PriceWidget(
+                              timelinePaintData: timelinePaintData,
+                              volumePaintData: volumePaintData,
+                              priceNotifier: priceNotifier,
+                            ),
                           ),
                       ],
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                height: widget.height,
-                width: kIndentationX,
-                child: AxisYWidget(volumePaintData: volumePaintData),
+              ValueListenableBuilder<Offset>(
+                valueListenable: priceNotifier,
+                builder: (context, pricePosition, child) {
+                  return SizedBox(
+                    height: widget.height,
+                    width: kIndentationX,
+                    child: AxisYWidget(
+                      volumePaintData: volumePaintData,
+                      pricePosition: showPrice ? pricePosition : Offset.zero,
+                    ),
+                  );
+                },
               ),
             ],
           );

@@ -7,8 +7,14 @@ import 'package:flutter_scroll_test/presentation/constants.dart';
 class PriceWidget extends StatefulWidget {
   final TimelinePaintData timelinePaintData;
   final VolumePaintData volumePaintData;
+  final ValueNotifier<Offset> priceNotifier;
 
-  const PriceWidget({Key? key, required this.timelinePaintData, required this.volumePaintData}) : super(key: key);
+  const PriceWidget({
+    Key? key,
+    required this.timelinePaintData,
+    required this.volumePaintData,
+    required this.priceNotifier,
+  }) : super(key: key);
 
   @override
   _PriceWidgetState createState() => _PriceWidgetState();
@@ -32,6 +38,7 @@ class _PriceWidgetState extends State<PriceWidget> {
         if (details.localPosition.dx < width && details.localPosition.dy < height) {
           setState(() {
             position = details.localPosition;
+            widget.priceNotifier.value = position;
           });
         }
       },
@@ -39,12 +46,14 @@ class _PriceWidgetState extends State<PriceWidget> {
         if (details.localPosition.dx < width && details.localPosition.dy < height) {
           setState(() {
             position = details.localPosition;
+            widget.priceNotifier.value = position;
           });
         }
       },
       onExit: (details) {
         setState(() {
           position = Offset.zero;
+          widget.priceNotifier.value = position;
         });
       },
       child: CustomPaint(
@@ -135,6 +144,7 @@ class _PriceWidgetPainter extends CustomPainter {
 
   void _drawPrice(Canvas canvas) {
     final paint = Paint()..color = kTextPriceBackgroundColor;
+    final axisPaint = Paint()..color = kAxisColor;
     final textSpan =
         TextSpan(text: kPriceDateFormat.format(timelinePaintData.dxToDateTime(position.dx)), style: kTextPriceStyle);
     final textPainter = TextPainter(text: textSpan, textAlign: TextAlign.center, textDirection: TextDirection.ltr);
@@ -146,6 +156,11 @@ class _PriceWidgetPainter extends CustomPainter {
         height: textPainter.height + 2 * kTextPricePadding,
       ),
       paint,
+    );
+    canvas.drawLine(
+      Offset(position.dx, height),
+      Offset(position.dx, height + kHatchWidth),
+      axisPaint,
     );
     textPainter.paint(canvas, Offset(position.dx - textPainter.width / 2, height + kTextPricePadding));
   }

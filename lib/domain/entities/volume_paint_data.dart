@@ -18,7 +18,10 @@ class VolumePaintData {
 
   late final double _height;
   late final double _volumePerPixel;
+  late final double _volumeHeight;
+  late final double _minValue;
   late final UnmodifiableListView<DataPoint> _segments;
+  late final int _fixed;
 
   VolumePaintData({
     required this.volumeRange,
@@ -31,6 +34,9 @@ class VolumePaintData {
   }) {
     _height = height - indentationY;
     _volumePerPixel = volumeRange.size / (_height - stockPaddingBottom - stockPaddingTop);
+    _fixed = _getFixed(volumeRange.maxVolume);
+    _volumeHeight = double.parse(_toBeautiful(_heightToVolume(_height), _fixed));
+    _minValue = double.parse(_toBeautiful(volumeRange.minVolume - _heightToVolume(stockPaddingBottom), _fixed));
     _segments = _calcSegments();
   }
 
@@ -38,16 +44,18 @@ class VolumePaintData {
 
   UnmodifiableListView<DataPoint> get segmentsByY => _segments;
 
+  String heightToVolume(double height) {
+    final volume = _volumeHeight - _heightToVolume(height) + _minValue;
+    return volume.toStringAsFixed(_fixed);
+  }
+
   UnmodifiableListView<DataPoint> _calcSegments() {
     final List<DataPoint> result = [];
-    final fixed = _getFixed(volumeRange.maxVolume);
-    final minValue = double.parse(_toBeautiful(volumeRange.minVolume - _heightToVolume(stockPaddingBottom), fixed));
     // final maxValue = double.parse(_toBeautiful(volumeRange.maxVolume + heightToVolume(stockPaddingTop), fixed));
-    final volumeStep = double.parse(_toBeautiful(_heightToVolume(stepY), fixed));
-    final volumeHeight = double.parse(_toBeautiful(_heightToVolume(_height), fixed));
-    for (double volumeY = volumeHeight; volumeY >= 0; volumeY -= volumeStep) {
-      final volume = volumeHeight - volumeY + minValue;
-      result.add(DataPoint(point: _volumeToHeight(volumeY), value: volume.toStringAsFixed(fixed)));
+    final volumeStep = double.parse(_toBeautiful(_heightToVolume(stepY), _fixed));
+    for (double volumeY = _volumeHeight; volumeY >= 0; volumeY -= volumeStep) {
+      final volume = _volumeHeight - volumeY + _minValue;
+      result.add(DataPoint(point: _volumeToHeight(volumeY), value: volume.toStringAsFixed(_fixed)));
     }
     return UnmodifiableListView(result);
   }
